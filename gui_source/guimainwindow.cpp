@@ -42,7 +42,6 @@ GuiMainWindow::GuiMainWindow(QWidget *pParent)
     listOptionsIDs.append(XOptions::ID_SCANAFTEROPEN);
     listOptionsIDs.append(XOptions::ID_SAVELASTDIRECTORY);
     listOptionsIDs.append(XOptions::ID_SINGLEAPPLICATION);
-    listOptionsIDs.append(XOptions::ID_LASTDIRECTORY);
     listOptionsIDs.append(XOptions::ID_SAVEBACKUP);
     listOptionsIDs.append(XOptions::ID_DATABASEPATH);
     listOptionsIDs.append(XOptions::ID_INFOPATH);
@@ -161,9 +160,11 @@ void GuiMainWindow::on_pushButtonStrings_clicked()
         {
             SearchStringsWidget::OPTIONS stringsOptions={};
             stringsOptions.bAnsi=true;
+            stringsOptions.bUTF8=false;
             stringsOptions.bUnicode=true;
 
-            DialogSearchStrings dialogSearchStrings(this,&file,stringsOptions,true);
+            DialogSearchStrings dialogSearchStrings(this);
+            dialogSearchStrings.setData(&file,stringsOptions,true);
             dialogSearchStrings.setShortcuts(&g_xShortcuts);
 
             dialogSearchStrings.exec();
@@ -187,7 +188,8 @@ void GuiMainWindow::on_pushButtonSignatures_clicked()
             SearchSignaturesWidget::OPTIONS signaturesOptions={};
             signaturesOptions.sSignaturesPath=g_xOptions.getSearchSignaturesPath();
 
-            DialogSearchSignatures dialogSearchSignatures(this,&file,XBinary::FT_UNKNOWN,signaturesOptions);
+            DialogSearchSignatures dialogSearchSignatures(this);
+            dialogSearchSignatures.setData(&file,XBinary::FT_UNKNOWN,signaturesOptions);
             dialogSearchSignatures.setShortcuts(&g_xShortcuts);
 
             dialogSearchSignatures.exec();
@@ -208,7 +210,8 @@ void GuiMainWindow::on_pushButtonEntropy_clicked()
 
         if(file.open(QIODevice::ReadOnly))
         {
-            DialogEntropy dialogEntropy(this,&file);
+            DialogEntropy dialogEntropy(this);
+            dialogEntropy.setData(&file);
             dialogEntropy.setShortcuts(&g_xShortcuts);
 
             dialogEntropy.exec();
@@ -229,7 +232,8 @@ void GuiMainWindow::on_pushButtonHash_clicked()
 
         if(file.open(QIODevice::ReadOnly))
         {
-            DialogHash dialogHash(this,&file,XBinary::FT_UNKNOWN);
+            DialogHash dialogHash(this);
+            dialogHash.setData(&file,XBinary::FT_UNKNOWN);
             dialogHash.setShortcuts(&g_xShortcuts);
 
             dialogHash.exec();
@@ -259,7 +263,7 @@ void GuiMainWindow::adjust()
 
     options.sDatabasePath=g_xOptions.getDatabasePath();
     options.sInfoPath=g_xOptions.getInfoPath();
-    options.bSaveBackup=g_xOptions.isSaveBackup();
+    options.bIsSaveBackup=g_xOptions.isSaveBackup();
     options.sSearchSignaturesPath=g_xOptions.getSearchSignaturesPath();
 
     ui->widgetFormats->setOptions(options);

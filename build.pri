@@ -1,18 +1,21 @@
 # For additional build parameters
 CONFIG(debug, debug|release) {
-    DESTDIR = ../build/debug
+    DESTDIR = $$PWD/build/debug
 } else {
-    DESTDIR = ../build/release
+    DESTDIR = $$PWD/build/release
 }
 
-win32-g++ {
+win32-g++* {
     QMAKE_CXXFLAGS += -Wno-missing-field-initializers
+    QMAKE_CXXFLAGS += -Werror=format-security
 }
 unix:!macx {
     QMAKE_CXXFLAGS += -Wno-missing-field-initializers
+    QMAKE_CXXFLAGS += -Werror=format-security
 }
 unix:macx {
     QMAKE_CXXFLAGS += -Wno-missing-field-initializers
+    QMAKE_CXXFLAGS += -Werror=format-security
 }
 
 !contains(QMAKE_TARGET.arch, x86_64) {
@@ -29,4 +32,8 @@ unix:macx {
        QMAKE_LFLAGS += /SUBSYSTEM:WINDOWS,5.01
     }
     # TODO more MSVC versions
+}
+contains(DEFINES, CREATE_PDB) {
+    QMAKE_CXXFLAGS += /Zi
+    QMAKE_LFLAGS += /DEBUG 
 }
